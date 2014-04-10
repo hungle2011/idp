@@ -1,0 +1,96 @@
+<html>
+<head>
+  <script src="https://cdn.firebase.com/v0/firebase.js"></script>
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+  <link rel="stylesheet" type="text/css" href="https://www.firebase.com/css/example.css">
+<script>
+function initialize(){
+    
+     
+     loadUserData("Jason Lim","Project Manager - Marketing","Male","jason_lim","jason_lim",
+    		 "jason.lim@gmail.com","+65 6745 6434",22,2,0);
+     loadUserFeedback("jason_lim","positive","anna_smith","I enjoyed the shared trip with Jason. He is a gentleman!");
+     loadUserFeedback("jason_lim","positive","johnathan_song","Jason is a polite guy :-)");
+     loadUserFeedback("jason_lim","positive","justin_lee","Jason looks like a nice guy. Totally good experience to travel with him.");
+     
+     loadUserData("Marie Wong","Auditor - Financial Services","Female","marie_wong","mariewong",
+    		 "marie.wong@gmail.com","+65 8242 2242",19,3,1);
+     loadUserFeedback("marie_wong","positive","linda_chew","I enjoyed the shared trip with Marie. She has good humor too!");
+     loadUserFeedback("marie_wong","positive","johnathan_song","Marie is very kind");
+     loadUserFeedback("marie_wong","neutral","bryan_tan","No comment! Not too bad experience");
+     
+     loadUserData("Joel Fong","Undergraduate - Social Science","Male","joel_fong","joelfong",
+    		 "joel.fong@gmail.com","+65 8324 1144",29,1,0);
+     loadUserFeedback("joel_fong","positive","john_luke","I enjoyed the shared trip with Joel.Good guy!");
+     loadUserFeedback("joel_fong","positive","anna_smith","Joel is a polite guy :-)");
+     loadUserFeedback("joel_fong","positive","jason_lim","Very trustworthy guy!");
+     
+     loadUserData("Linda Chew","Baker","Female","linda_chew","lindachew",
+    		 "linda.chew@gmail.com","+65 6224 2941",12,3,5);
+     loadUserFeedback("linda_chew","positive","marie_wong","Good shared trip with Linda");
+     loadUserFeedback("linda_chew","negative","robert_yiu","So so experience; please be on time next time");
+     loadUserFeedback("linda_chew","neutral","john_luke","No comment!");
+    
+     loadUserData("John Luke","Dentist","Male","john_luke","johnluke",
+    		 "john.luke@gmail.com","+65 6221 9942",10,11,3);
+     loadUserFeedback("john_luke","negative","anna_smith","Sorry. It was not very good experience");
+     loadUserFeedback("john_luke","neutral","johnathan_song","John is a polite guy");
+     loadUserFeedback("john_luke","negative","robert_yiu","");
+     
+     loadUserData("Anna Smith","Teacher - Primary School","Female","anna_smith","annasmith",
+    		 "anna.smmith@gmail.com","+65 9242 4312",20,10,4);
+     loadUserFeedback("anna_smith","positive","bryan_tan","I enjoyed the shared trip with Anna. Great lady!");
+     loadUserFeedback("anna_smith","negative","joel_fong","Anna is a bit cold...");
+     loadUserFeedback("anna_smith","positive","justin_lee","Anna is a very kind and polite lady!");
+     
+     loadUserData("Bryan Tan","Teacher - Secondary School","Male","bryan_tan","bryantan",
+    		 "bryan.tan@gmail.com","+65 9442 2123",12,3,18);
+     loadUserFeedback("bryan_tan","negative","john_luke","Bryan should have some respect to taxi drivers");
+     loadUserFeedback("bryan_tan","negative","johnathan_song","Bryan is not very polite");
+     loadUserFeedback("bryan_tan","negative","robert_yiu","");
+     
+     loadUserData("Robert Yiu","Artist - Singer","Male","robert_yiu","robertyiu",
+    		 "robert.yiu@gmail.com","+65 9042 4111",4,11,2);
+     loadUserFeedback("robert_yiu","positive","jason_lim","I enjoyed the shared trip with Robert");
+     loadUserFeedback("robert_yiu","neutral","marie_wong","OK! Nice to travel with Robert");
+     loadUserFeedback("robert_yiu","neutral","justin_lee","");
+     
+     loadUserData("Johnathan Song","Student - JC","Male","johnathan_song","johnathansong",
+    		 "johnathan.song@gmail.com","+65 9022 1112",13,1,1);
+     loadUserFeedback("johnathan_song","positive","anna_smith","J has great story to share with anyone!");
+     loadUserFeedback("johnathan_song","positive","johnathan_song","Nice and kind guy!");
+     loadUserFeedback("johnathan_song","positive","justin_lee","Such a nice trip to be shared with Johnathan. Thank you!");
+     
+     loadUserData("Justin Lee","HR Director","Male","justin_lee","justinlee",
+    		 "justin.le@gmail.com","+65 9424 0012",9,12,2);
+     loadUserFeedback("justin_lee","positive","marie_wong","I enjoyed the shared trip with Justin. Liked to talk to him too!");
+     loadUserFeedback("justin_lee","negative","linda_chew","Sorry Justin was quite rude");
+     loadUserFeedback("justin_lee","positive","joel_fong","");
+
+}
+
+function loadUserData(name,occupation,gender,username,password,email,phoneNumber,positive,neutral,negative){
+	 var userRef = new Firebase('https://glaring-fire-5132.firebaseio.com/users/'+username); 
+    userRef.set({name:name, occupation: occupation, gender: gender, username: username,
+   	 password:password,email:email,phoneNumber: phoneNumber,positive:positive,neutral:neutral,negative:negative});
+}
+
+/**function loadUserData(name,occupation,gender,username,password,email,phoneNumber){
+	 var userRef = new Firebase('https://glaring-fire-5132.firebaseio.com/users/'+username); 
+     userRef.set({name:name, occupation: occupation, gender: gender, username: username,
+    	 password:password,email:email,phoneNumber: phoneNumber});
+}*/
+
+function loadUserFeedback(username,rating,from,text){
+	 var jasonFeedbackRef = new Firebase('https://glaring-fire-5132.firebaseio.com/users/'+username+'/rating');
+     jasonFeedbackRef.push({rating:rating,from:from,text:text});
+}
+ 
+ 
+</script>
+</head>
+<body>
+<button onclick="initialize()">Load Data</button> 
+
+</body>
+</html>

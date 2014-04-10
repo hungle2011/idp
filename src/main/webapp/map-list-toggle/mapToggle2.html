@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Google Maps - jQuery Mobile Demos</title>
+	<link rel="stylesheet" href="../jquery-mobile/jquery.mobile-1.4.2.min.css" />
+	<style>
+	.segmented-control { text-align:center; }
+	.segmented-control .ui-controlgroup { display:inline; margin:.2em 0px; }
+
+	#map-page { width:100%; height:100%; }
+	
+	#map-canvas {
+		width:200px; height:100%;
+    padding: 0;
+    position : absolute !important; 
+    top : 40px !important;  
+    right : 0; 
+    bottom : 40px !important;  
+    left : 0 !important;     
+}
+	#gmap-marker-link { color:#00a0df; text-decoration:none; }
+
+	.ui-gmap-canvas { width:100%; height:100%; }
+	.ui-gmap-infobox { display:none; }
+
+	
+	.wrap { white-space:normal; }
+	</style>
+	
+	<script src="../js/jquery.js"></script>
+	<script src="../jquery-mobile/jquery.mobile-1.4.2.min.js"></script>
+	  
+	
+	
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+     <script src="https://cdn.firebase.com/v0/firebase.js"></script>
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+  <script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
+    <style>
+    .modal {
+    background-color:#fff;
+    display:none;
+    width:350px;
+    padding:15px;
+    text-align:left;
+    border:2px solid #333;
+
+    opacity:0.8;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    -moz-box-shadow: 0 0 50px #ccc;
+    -webkit-box-shadow: 0 0 50px #ccc;
+  }
+
+  .modal h2 {
+    background:url(/media/img/global/info.png) 0 50% no-repeat;
+    margin:0px;
+    padding:10px 0 10px 45px;
+    border-bottom:1px solid #333;
+    font-size:20px;
+  }
+  </style>
+  <script>
+  
+////////////////////////////DATA INITIALIZATION///////////////////////////////////////// 
+var woodland = new google.maps.LatLng(1.43754,103.78961 );
+
+var users = [
+  "Jason Lim", "Linda Chew","John Luke","Joel Fong","Anna Smith",  
+  "Bryan Tan","Robert Yiu","Johnthan Song","Justin Lee"
+];
+
+var usernames = [
+   "jason_lim","linda_chew","john_luke","joel_fong","anna_smith",
+   "bryan_tan","robert_yiu","johnathan_song","justin_lee"
+];
+
+
+
+var usersGender = [
+	"He","She","He","He","She",             
+	"He","He","He","He"    
+];
+
+var destinations=[
+  "Changi Business Park","Ang Mo Kio Street 22","21 Lower Kent Ridge Road","Pasir Ris Street 21","SMU Li Ka Shing Library",
+  "Startbucks Vivo City","DBS Plaza Singapura","Blk 80 Duxton Road","Blk 312 Sims Drive"
+                 
+];
+
+var positives = new Array();
+positives[0]=22;
+positives[1]=29;
+positives[2]=12;
+positives[3]=10;
+positives[4]=20;
+positives[5]=12;
+positives[6]=4;
+positives[7]=13;
+positives[8]=9;
+
+var neutrals = new Array();
+neutrals[0]=2;
+neutrals[1]=1;
+neutrals[2]=3;
+neutrals[3]=11;
+neutrals[4]=10;
+neutrals[5]=3;
+neutrals[6]=11;
+neutrals[7]=1;
+neutrals[8]=12;
+
+var negatives = new Array();
+negatives[0]=0;
+negatives[1]=0;
+negatives[2]=5;
+negatives[3]=3;
+negatives[4]=4;
+negatives[5]=18;
+negatives[6]=2;
+negatives[7]=1;
+negatives[8]=2;
+
+var latitudes = new Array();
+latitudes[0]=1.43675;
+latitudes[1]=1.43792;
+latitudes[2]=1.43877;
+latitudes[3]=1.43598;
+latitudes[4]=1.43566;
+latitudes[5]=1.43479;
+latitudes[6]=1.43563;
+latitudes[7]=1.43455;
+latitudes[8]=1.44017;
+var longitudes = new Array();	
+longitudes[0]=103.78974;
+longitudes[1]=103.79074;
+longitudes[2]=103.78928;
+longitudes[3]=103.78953;
+longitudes[4]=103.78943;
+longitudes[5]=103.78952;
+longitudes[6]=103.79166;
+longitudes[7]=103.78658;
+longitudes[8]=103.78789;
+
+var neighborhoods = [
+  new google.maps.LatLng(1.43675, 103.78974),
+  new google.maps.LatLng(1.43792,103.79074 ),
+  new google.maps.LatLng(1.43877,103.78928 ),
+  new google.maps.LatLng(1.43598, 103.78953),
+  new google.maps.LatLng(1.43566,103.78943),
+  new google.maps.LatLng(1.43479,103.78952),
+  new google.maps.LatLng(1.43563,103.79166),
+  new google.maps.LatLng(1.43455,103.78658),
+  new google.maps.LatLng(1.44017,103.78789)
+];
+
+
+
+var markers = [];
+var iterator = 0;
+
+var map;
+var distanceFilter = 500;
+
+function updateDistanceFilter(){
+	var distance = document.getElementById("rangeInput").value;
+	distanceFilter = distance;
+	for (var i = 0; i < markers.length; i++) {
+	    markers[i].setMap(null);
+	  } 
+	dropMarkers(distanceFilter);
+	
+}
+
+////////////////////////////////////Push Notification////////////////////////////////////////////////////
+var chatRef = new Firebase("https://glaring-fire-5132.firebaseio.com/chat");
+var messageIterator = 0;
+chatRef.on('child_added', function(snapshot) {
+  var chatData = snapshot.val();
+  var from = chatData.from;
+  var to = chatData.to;
+  var timestamp = chatData.timestamp; 
+  var chatRef = new Firebase("https://glaring-fire-5132.firebaseio.com/users/marie_wong/userStatus/");
+  //var lastSeen;
+  chatRef.on('value', function(snapshot) {
+	  var lastSeen = snapshot.val().last;
+	  //alert(lastSeen);
+	   if(to=="marie_wong" && (lastSeen<timestamp || status=='unread')){
+			messageIterator++;   
+			//alert("to:" + to + " lastSeen: " + lastSeen + " timestamp: "  + timestamp);
+			 document.getElementById('newMessages1').textContent = "("+ messageIterator.toString()+")";
+	  }
+  });
+  //alert(lastSeen);
+});
+
+////////////////////////////////UPDATE DISTANCE FILTER//////////////////////////////////////////////
+function distance(lat1, lon1, lat2, lon2, unit) {
+	var radlat1 = Math.PI * lat1/180;
+	var radlat2 = Math.PI * lat2/180;
+	var radlon1 = Math.PI * lon1/180;
+	var radlon2 = Math.PI * lon2/180;
+	var theta = lon1-lon2;
+	var radtheta = Math.PI * theta/180;
+	var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+	dist = Math.acos(dist);
+	dist = dist * 180/Math.PI;
+	dist = dist * 60 * 1.1515;
+	if (unit=="K") { dist = dist * 1.609344; }
+	if (unit=="M") { dist = dist * 1.609344 * 1000; }
+	if (unit=="N") { dist = dist * 0.8684; }
+	return Math.round(dist);
+} 
+
+////////////////////////////////////MAP INITIALIZATION//////////////////////////////
+function initialize() {
+  var mapOptions = {
+    zoom: 15,
+    center: woodland
+  };
+
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+          mapOptions);
+}
+
+function drop() {	  
+	var contentString = 
+		'<div style="height:150px;width:150px">'+
+	      '<div id="siteNotice">'+
+	      '</div>'+
+	      '<h1 id="firstHeading" class="firstHeading">You Are Here</h1>'+
+	      '<div id="bodyContent">'+
+	      '<p><a href="index.jsp?username=<%=username%>">'+
+	      'Amend Your Search/Request</a> '+
+	      '</p>'+
+	      '</div>'+
+	      '</div>';
+
+var infowindow = new google.maps.InfoWindow({
+    content: contentString
+});
+
+var image = 'icons/taxi.png';
+var currentLocation = new google.maps.Marker({
+    position: woodland,
+    map: map,
+    icon: image
+});
+
+google.maps.event.addListener(currentLocation, 'click', function() {
+  infowindow.open(map,currentLocation);
+});
+	 
+	   
+  dropMarkers(distanceFilter);
+  
+  
+}
+
+///////////////////////////////////MARKER DROPPING ANIMATION////////////////////////
+function dropMarkers(distanceFilter){
+	iterator = 0;
+	 for (var i = 0; i < neighborhoods.length; i++) {
+		    setTimeout(function() {
+		      addMarker(distanceFilter);
+		    }, i*100);
+	}  
+}
+
+function addMarker(distanceFilter) {	
+  var distanceBetweenPoints = distance(1.43754,103.78961,latitudes[iterator],longitudes[iterator],"M");	
+  if(distanceBetweenPoints<=distanceFilter){
+	  var image = "icons/number_"+(iterator+1)+".png";	
+	  var marker = new google.maps.Marker({
+		    position: neighborhoods[iterator],
+		    map: map,
+		    icon: image,
+		    draggable: false,
+		    animation: google.maps.Animation.DROP
+		  });
+	  
+	  var contentString = 
+			'<div style="height:150px;width:150px">'+
+		      '<div id="siteNotice">'+
+		      users[iterator] + ' is heading to'+
+		      '<div id="bodyContent">'+
+		      '<h3>' + destinations[iterator] + '</h3>'+
+		      usersGender[iterator]+' is withtin ' + distanceBetweenPoints +'m from your location'+
+		      '<p>Positive: '+ positives[iterator] + '</p>'+
+		      '<p>Neutral: '+ neutrals[iterator] + '</p>'+
+		      '<p>Negative: '+ negatives[iterator] + '</p>'+
+		      '<p><a data-ajax="false" href="viewprofile.jsp?username=<%=username%>'+
+		      '&requestor='+usernames[iterator]+
+		      '&requestorName='+ users[iterator]+
+		      '&destination='+ destinations[iterator] + '">'+
+		      'View Profile</a> '+'</p>'+
+		      '<p><button class="modalInput" rel="#prompt" id='+usernames[iterator] +'>Send Request</button></p>'+
+		      '</div>'+
+		      '</div>';
+
+	var infowindow = new google.maps.InfoWindow({
+	    content: contentString
+	});
+	  
+		google.maps.event.addListener(marker, 'click', function() {
+			  infowindow.open(map,marker);
+			  $(document).ready(function() {
+				    var triggers = $(".modalInput").overlay({
+
+				      // some mask tweaks suitable for modal dialogs
+				      mask: {
+				        color: '#ebecff',
+				        loadSpeed: 200,
+				        opacity: 0.9
+				      },
+
+				      closeOnClick: true
+				  });
+
+				    $("#prompt form").submit(function(e) {
+				  });
+			});
+	  });
+	  markers.push(marker);
+  }
+  iterator++;
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+function sendRequest(){
+	var message = document.getElementById("requestMessage").value;
+	//alert(message);
+	if (message!=null&&message.trim()!=""){
+			//var url='https://glaring-fire-5132.firebaseio.com/chat';
+			//var chatRef = new Firebase(url);
+	   	    //chatRef.push({from:"abc",to:"abc",text:"abc"});
+	   		 //document.getElementById('prompt').innerHTML = 'asfdas';
+	   	    alert("Your request was successfully sent");
+	   	    window.location.href="map.jsp?username=<%=username%>&requestSent=true"; 
+	   	    return false;
+	}else{
+		  document.getElementById("sendRequestError").textContent="Request message cannot be empty! Please try again";
+	}
+}
+</script>
+
+
+
+	
+	
+	<!-- Google Maps JS assets are loaded at bottom of page for performance -->
+	<script>
+	$( document ).on( "pagecreate", "#map-page", function() {
+		var $mapSwitch = $( "#map-switch" ),
+		    $listSwitch = $( "#list-switch" ),
+			$map = $( "#map-canvasShow" ),
+	        $list = $( "#list-canvas" );
+
+	    $mapSwitch.on( "click", function( e ){
+	       	$map.show();
+	       
+	       	$list.hide();
+	    });
+
+	    $listSwitch.on( "click", function( e ){
+	       	$list.show();
+			$map.hide();
+	    });
+
+	   
+	});
+
+	/**
+	 * Geolocation configuration
+	 */
+	var JQM = JQM || {};
+	JQM.geo = {
+		location: "",
+		zip: "",
+		startIndex: "",
+
+	    showMore: function(latlng) {
+	    	$.mobile.loading( "show" );
+	    	JQM.geo.location = latlng;
+
+			$.ajax({
+			  	url: "showMore.html?lat="+JQM.geo.location.coords.latitude+"&lon="+JQM.geo.location.coords.longitude+"&zip="+JQM.geo.zip+"&startIndex="+JQM.geo.startIndex,
+			  	success: function( response ) {
+			  		var $listResults = $( "#list-results" );
+					$listResults.find( "#show-more" ).before(response);
+					$listResults.listview( "refresh" );
+					$.mobile.loading( 'hide' );
+			  	},
+				timeout: 6000,  // Timeout after 6 seconds
+				error: function(jqXHR, textStatus, errorThrown) {
+					console.log("Error, textStatus: " + textStatus + " errorThrown: "+ errorThrown);
+					$.mobile.loading( "hide" );
+				}
+			});
+	    }
+	};
+	</script>
+</head>
+<body onload="drop()">
+<!-- /page -->
+
+	<div data-role="page" id="map-page">
+		<div data-role="header" data-position="fixed">
+			<div class="segmented-control ui-bar-d">
+		 	<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+	  			<input type="radio" name="switch" id="list-switch" checked="true">
+				<label for="list-switch">List</label>
+	         	<input type="radio" name="switch" id="map-switch">
+	         	<label for="map-switch">Map</label>
+		    </fieldset>
+			</div>
+		</div>
+		
+		<div role="main" class="ui-content ui-content-list">
+		
+	        <div id="list-canvas">
+	            <ul id="list-results" data-role="listview">
+	            	<li data-marker-info="44.811805,-93.176352">
+					  <div style="display:none;">
+					    <div class="ui-gmap-marker-info">
+					  	  <h1><a id="gmap-marker-link" href="#">Fast Clinic</a></h1>
+					  	  <p>8888 Fast Rd</p>
+					  	</div>
+					  </div>
+	            	  <a href="#">
+	            	  	<h1 class="ui-gmap-marker-title wrap">Fast Clinic</h1>
+	            	  	<div class="ui-li-count">
+	            	  		<span>0.71 miles</span>
+	            	  	</div>
+	            	  </a>
+	            	</li>
+	            	<li data-marker-info="44.788673,-93.205671">
+					  <div style="display:none;">
+					    <div class="ui-gmap-marker-info">
+					  	  <h1><a id="gmap-marker-link" href="#">North Memorial Care</a></h1>
+					  	  <p>8398 Jefferson Ct</p>
+					  	</div>
+					  </div>
+	            	  <a href="#">
+	            	  	<h1 class="ui-gmap-marker-title wrap">North Memorial Care</h1>
+	            	  	<div class="ui-li-count">
+	            	  		<span>0.71 miles</span>
+	            	  	</div>
+	            	  </a>
+	            	</li>
+	            	
+	            	
+	            	
+					
+				</ul>
+			</div>
+			
+		</div>
+        
+		
+			<div role="main" class="ui-content" id="map-canvasShow" data-initial-view="44.80,-93.16,10" style="display:none;">
+				<div id="map-canvas"></div>
+			</div>
+
+		
+        
+        
+	
+	</div>
+
+</body>
+</html>

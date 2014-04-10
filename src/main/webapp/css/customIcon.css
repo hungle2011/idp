@@ -1,0 +1,39 @@
+@charset "UTF-8";
+/* CSS Document */
+.ui-icon-myicon {
+width:2.4em;
+height:2.4em;
+margin-top:-10px;
+
+
+background-color: #22AACC !important;
+
+
+}
+
+.ui-btn-icon-notext {
+width:2.4em !important;
+height:2.4em !important;
+}
+.ui-icon-myicon:after {
+	background-image: url("../images/3lines.svg");
+	background-size: 2em;
+	
+}
+	/* Fallback */
+.ui-nosvg .ui-icon-myicon:after {
+	background-image: url("../images/3lines.png");
+	background-size: 2em;
+}
+
+
+
+#btn2.ui-btn-icon-left:after,
+#btn2.ui-btn-icon-notext:after {
+
+	-webkit-border-radius: 0em;
+	border-radius: 0em;
+}
+
+
+

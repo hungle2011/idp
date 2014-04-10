@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- <link rel="stylesheet" href="jquery-mobile/jquery.mobile-1.4.2.min.css" /> -->
+   <link rel="stylesheet" type="text/css" href="jquery-mobile/jquery.mobile.structure-1.4.2.min.css">
+   <!-- Custom theme-->
+   <link rel="stylesheet" type="text/css" href="jquery-mobile/themes/custom-theme.css">
+   <link rel="stylesheet" type="text/css" href="jquery-mobile/themes/jquery.mobile.icons.min.css">
+	  <script src="jquery-mobile/jquery-1.11.0.min.js"></script> 
+	<script src="jquery-mobile/jquery.mobile-1.4.2.min.js"></script>
+
+  
+	
+
+	<script>
+  
+
+  
+  function authenticate(){
+	  var password = document.getElementById("password").value;
+	  var username = document.getElementById("username").value;
+		if ((username=="jason_lim" && password=="jasonlim")||
+				(username=="marie_wong" && password=="mariewong")||
+				(username=="joel_fong" && password=="joelfong")||
+				(username=="linda_chew" && password=="lindachew")||
+				(username=="john_luke" && password=="johnluke")||
+				(username=="anna_smith" && password=="annasmith")||
+				(username=="robert_yiu" && password=="robertyiu")||
+				(username=="johnathan_song" && password=="johnathansong")||
+				(username=="bryan_tan" && password=="bryantan")||
+				(username=="justin_lee" && password=="justinlee")){
+			window.location.href = 'index.jsp?username='+username;
+			  return false;
+		}else{
+			document.getElementById("errorMessage").textContent="Invalid username or password. Please try again!";
+			document.getElementById("password").value="";
+	        return false;
+		}	  
+	 
+}
+  
+  </script>
+  
+ <style>
+ #errorMessage{
+ 	color:red;
+ }
+ #logo_img {
+ 
+   display: block;
+    margin-left: auto;
+    margin-right: auto;
+	 height:200px;
+}
+.ui-grid-b .ui-block-a{
+	float:left;
+	width:0%;
+}
+.ui-grid-b .ui-block-b{
+	float:left;
+	width:100%;
+}
+.ui-grid-b .ui-block-c{
+	float:left;
+	width:0%;
+}
+
+.ui-content{
+	display:block;
+	width:80%;
+	margin-left:auto;
+	margin-right:auto;
+}	
+ </style> 
+ 
+ 
+</head>
+<body>
+
+<!-- Start of first page -->
+<div data-role="page" id="login">
+
+	<div data-role="main" class="ui-content">
+
+	
+		
+		<img src="images/logo.jpg" alt="" id="logo_img"  />
+		
+   
+
+		
+        <form method="post" action="" name="form1" onsubmit="authenticate();return false;">
+    
+    <input type="text" name="Username" id="username" placeholder="username" value="" data-clear-btn="true">
+   
+    <input type="password" name="Password" id="password" placeholder="password" value="" data-clear-btn="true">
+    <p><a id="errorMessage"></a><p>
+    <div class="ui-grid-b">
+	    <div class="ui-block-a">&nbsp;</div>
+	    <div class="ui-block-b"><input type="submit" name="commit" value="Log In" class="ui-btn ui-corner-all" ></div>
+	    <div class="ui-block-c">&nbsp;</div>
+	</div>
+  
+</form>
+<div class="ui-grid-b">
+    <div class="ui-block-a">&nbsp;</div>
+    <div class="ui-block-b"><button  class="ui-btn ui-corner-all">Sign Up</button></div>
+    <div class="ui-block-c">&nbsp;</div>
+</div>
+ 
+	</div><!-- /content -->
+
+	
+</div><!-- /page -->
+
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Google Maps - jQuery Mobile Demos</title>
+	<link rel="stylesheet" href="../jquery-mobile/jquery.mobile-1.4.2.min.css" />
+	<style>
+	.segmented-control { text-align:center; }
+	.segmented-control .ui-controlgroup { display:inline; margin:.2em 0px; }
+
+	#map-page { width:100%; height:100%; }
+	#map-canvas { width:100%; height:100%; margin-top:-30px; padding:0px!important; }
+	#gmap-marker-link { color:#00a0df; text-decoration:none; }
+
+	.ui-gmap-canvas { width:100%; height:100%; }
+	.ui-gmap-infobox { display:none; }
+
+	
+	.wrap { white-space:normal; }
+	</style>
+	
+	<script src="../js/jquery.js"></script>
+	<script src="../jquery-mobile/jquery.mobile-1.4.2.min.js"></script>
+	<!-- Google Maps JS assets are loaded at bottom of page for performance -->
+	<script>
+	$( document ).on( "pagecreate", "#map-page", function() {
+		var $mapSwitch = $( "#map-switch" ),
+		    $listSwitch = $( "#list-switch" ),
+			$map = $( "google.com" ),
+	        $list = $( "#list-canvas" );
+
+	    $mapSwitch.on( "click", function( e ){
+	       	$map.show();
+	       	$map.gmap();
+	       	$list.hide();
+	    });
+
+	    $listSwitch.on( "click", function( e ){
+	       	$list.show();
+			$map.hide();
+	    });
+
+	   
+	});
+
+	/**
+	 * Geolocation configuration
+	 */
+	var JQM = JQM || {};
+	JQM.geo = {
+		location: "",
+		zip: "",
+		startIndex: "",
+
+	    showMore: function(latlng) {
+	    	$.mobile.loading( "show" );
+	    	JQM.geo.location = latlng;
+
+			$.ajax({
+			  	url: "showMore.html?lat="+JQM.geo.location.coords.latitude+"&lon="+JQM.geo.location.coords.longitude+"&zip="+JQM.geo.zip+"&startIndex="+JQM.geo.startIndex,
+			  	success: function( response ) {
+			  		var $listResults = $( "#list-results" );
+					$listResults.find( "#show-more" ).before(response);
+					$listResults.listview( "refresh" );
+					$.mobile.loading( 'hide' );
+			  	},
+				timeout: 6000,  // Timeout after 6 seconds
+				error: function(jqXHR, textStatus, errorThrown) {
+					console.log("Error, textStatus: " + textStatus + " errorThrown: "+ errorThrown);
+					$.mobile.loading( "hide" );
+				}
+			});
+	    }
+	};
+	</script>
+</head>
+<body>
+<!-- /page -->
+
+	<div data-role="page" id="map-page">
+		<div data-role="header" data-position="fixed">
+			<div class="segmented-control ui-bar-d">
+		 	<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+	  			<input type="radio" name="switch" id="list-switch" checked="true">
+				<label for="list-switch">List</label>
+	         	<input type="radio" name="switch" id="map-switch">
+	         	<label for="map-switch">Map</label>
+		    </fieldset>
+			</div>
+		</div>
+		<div role="main" class="ui-content ui-content-list">
+	        <div id="list-canvas">
+	            <ul id="list-results" data-role="listview">
+	            	<li data-marker-info="44.811805,-93.176352">
+					  <div style="display:none;">
+					    <div class="ui-gmap-marker-info">
+					  	  <h1><a id="gmap-marker-link" href="#">Fast Clinic</a></h1>
+					  	  <p>8888 Fast Rd</p>
+					  	</div>
+					  </div>
+	            	  <a href="#">
+	            	  	<h1 class="ui-gmap-marker-title wrap">Fast Clinic</h1>
+	            	  	<div class="ui-li-count">
+	            	  		<span>0.71 miles</span>
+	            	  	</div>
+	            	  </a>
+	            	</li>
+	            	<li data-marker-info="44.788673,-93.205671">
+					  <div style="display:none;">
+					    <div class="ui-gmap-marker-info">
+					  	  <h1><a id="gmap-marker-link" href="#">North Memorial Care</a></h1>
+					  	  <p>8398 Jefferson Ct</p>
+					  	</div>
+					  </div>
+	            	  <a href="#">
+	            	  	<h1 class="ui-gmap-marker-title wrap">North Memorial Care</h1>
+	            	  	<div class="ui-li-count">
+	            	  		<span>0.71 miles</span>
+	            	  	</div>
+	            	  </a>
+	            	</li>
+	            	
+	            	
+	            	
+					
+				</ul>
+			</div>
+		</div>
+        
+		<div role="main" class="ui-content" id="map-canvas" data-initial-view="44.80,-93.16,10" style="display:none;"></div>
+        
+        
+	<!-- Load map assets at bottom for performance -->
+	<script type="text/javascript" src="jquery.gmap.js"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/infobox/1.0/src/infobox_packed.js"></script>
+	</div>
+
+</body>
+</html>

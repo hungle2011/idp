@@ -1,0 +1,117 @@
+			html {
+				background: url("bg.png") no-repeat center center; padding: 0;
+				margin: 0;
+				height: 100%;}
+			html,
+			body
+			{
+				position: relative;
+				height:100%;
+			}
+			
+			body, div, p
+			{
+				font-family: Arial, Helvetica, Verdana;
+				font-size: 16px;
+				line-height: 22px;
+				color: #fff;
+				-webkit-text-size-adjust: none;
+			}
+			
+			a,
+			a:hover
+			{
+				color: #fff;
+				text-decoration: underline;
+			}
+
+			#phone
+			{
+				height: 100%;
+				width: 50%;
+				margin-right: 285px;
+				position: fixed;
+				top: 0;
+				right: 50%;
+				z-index: 2;
+			}
+			#phone:before,
+			#phone:after
+			{
+			}
+			#phone:before
+			{
+				bottom: 50%;
+				margin-bottom: 350px;
+			}
+			#phone:after
+			{
+				top: 50%;
+				margin-top: 350px;
+			}
+			#phone > div
+			{
+				background: center center no-repeat transparent;
+				background-image: url("iPhone.png");
+				width: 455px;
+				height: 780px;
+				margin: -370px 0 0 0;
+				position: absolute;
+				top: 50%;
+				right: -265px;
+				z-index: 1;
+			}
+			#phone iframe
+			{
+				box-shadow: 0 0 2px rgba( 0, 0, 0, 0.4 );
+				background: #eee;
+				border: none;
+				width: 299px;
+				height: 532px;
+				margin: 126px 0 0 78px;
+			}
+			
+			#page
+			{
+				height: 100%;
+				width: 100%;
+				position: relative;
+			}
+			
+			#page > div
+			{
+				width: 400px;
+				padding: 10px 0 0 0;
+				margin-top: -200px;
+				position: relative;
+				top: 50%;
+				left: 50%;
+			}
+
+			h1
+			{
+				background: url("logo.png") no-repeat left top;
+				text-indent: -1000px;
+				overflow: hidden;
+				margin: 0;
+				height: 200px;
+				width: 540px;
+			}
+			@media screen and ( min-width: 950px ) {
+				.smallscreen
+				{
+					display: none;
+				}
+			}
+			@media screen and ( max-width: 949px ) {
+				.widescreen
+				{
+					display: none;
+				}
+				#phone
+				{ 
+				}
+				#page > div
+				{ 
+				}
+			}

@@ -1,0 +1,305 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Notifications</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- <link rel="stylesheet" href="jquery-mobile/jquery.mobile-1.4.2.min.css" /> -->
+   <link rel="stylesheet" type="text/css" href="jquery-mobile/jquery.mobile.structure-1.4.2.min.css">
+   <!-- Custom theme-->
+   <link rel="stylesheet" type="text/css" href="jquery-mobile/themes/custom-theme.css">
+   <link rel="stylesheet" type="text/css" href="jquery-mobile/themes/jquery.mobile.icons.min.css">
+	  <script src="jquery-mobile/jquery-1.11.0.min.js"></script> 
+	<script src="jquery-mobile/jquery.mobile-1.4.2.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="jquery-mobile/demos/_assets/css/jqm-demos.css">
+	
+	<script src="jquery-mobile/demos/js/jquery.js"></script>
+	<script src="jquery-mobile/demos/_assets/js/index.js"></script>
+    <!-- JS & CSS for swipe menu-->
+    <script src="js/swipeMenu.js"></script>
+
+    <!-- css for slider menu and back button-->
+    <link rel="stylesheet" type="text/css" href="css/customIcon.css">
+    <link rel="stylesheet" type="text/css" href="css/pannel.css">
+    <style >
+	.ui-btn { border: none !important; }
+        
+    </style>
+    <style>
+.ui-block-a, 
+.ui-block-b, 
+.ui-block-c 
+{
+background-color: #ffffff;
+
+}
+</style>
+
+<script src="https://cdn.firebase.com/v0/firebase.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script src="https://www.firebase.com/js/libs/idle.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
+  <script>
+ /** var jason_lim = {};
+  var joel_fong = {};
+  var linda_chew = {};
+  var john_luke = {};
+  var anna_smith = {};
+  var bryan_tan = {};
+  var robert_yiu = {};
+  var johnathan_song = {};
+  var Justin_lee = {};*/
+//add a item
+//map["123"] = "abc";
+//or remove it
+//alert(map["123"]);
+  
+  var m_names = new Array("Jan", "Feb", "Mar", 
+		"Apr", "May", "Jun", "Jul", "Aug", "Sep", 
+		"Oct", "Nov", "Dec");
+  
+////////////////////////////////////Push Notification////////////////////////////////////////////////////
+  var chatRef = new Firebase("https://glaring-fire-5132.firebaseio.com/chat");
+  var messageIterator = 0;
+  chatRef.on('child_added', function(snapshot) {
+    var chatData = snapshot.val();
+    var from = chatData.from;
+    var to = chatData.to;
+    var timestamp = chatData.timestamp; 
+    var status = chatData.status;
+    var chatRef = new Firebase("https://glaring-fire-5132.firebaseio.com/users/marie_wong/userStatus/");
+    //var lastSeen;
+    chatRef.on('value', function(snapshot) {
+  	  var lastSeen = snapshot.val().last;
+  	  //alert(lastSeen);
+  	  if(to=="marie_wong" && (lastSeen<timestamp || status=='unread')){
+  			messageIterator++;   
+  			//alert("to:" + to + " lastSeen: " + lastSeen + " timestamp: "  + timestamp);
+  			 document.getElementById('newMessages1').textContent = messageIterator.toString();
+  	  }
+    });
+    //alert(lastSeen);
+  });
+  
+////////////////////////////////////Unread Messages////////////////////////////////////////////////////
+  var chatRef = new Firebase("https://glaring-fire-5132.firebaseio.com/chat");
+  var messageIteratorJason = 0;
+  var messageIteratorJoel = 0;
+  var messageIteratorLinda = 0;
+  var messageIteratorJohn = 0;
+  var messageIteratorAnna = 0;
+  var messageIteratorBryan = 0;
+  var messageIteratorRobert = 0;
+  var messageIteratorJohnathan = 0;
+  var messageIteratorJustin = 0;
+  chatRef.on('child_added', function(snapshot) {
+    var chatData = snapshot.val();
+    var from = chatData.from;
+    var to = chatData.to;
+    var messageStr = chatData.text;
+    var timestamp = chatData.timestamp; 
+    var status = chatData.status;
+    var chatRef = new Firebase("https://glaring-fire-5132.firebaseio.com/users/marie_wong/userStatus/");
+    //var lastSeen;
+    chatRef.on('value', function(snapshot) {
+  	  var lastSeen = snapshot.val().last;
+  	  //alert(lastSeen);
+  	  if(to=="marie_wong" && from=="jason_lim"){
+  		  	if(lastSeen<timestamp || status=='unread'){
+  		  	messageIteratorJason ++;
+  			}
+  			   var ni = document.getElementById('jason');
+  				 ni.innerHTML = '<h3>Jason Lim:</h3>'+ 
+			    "<p>"+ messageStr + "</p>"+
+			    "<p>"+ formatTimeStr(timestamp) + "</p>"+
+			    '<a href="chat.jsp?username=marie_wong&requestor=jason_lim">'+
+			    messageIteratorJason.toString() +' new message(s)</a>'+
+  				 "<hr>";	  
+  	  }
+  			
+  	if(to=="marie_wong" && from=="joel_fong"){
+  		if(lastSeen<timestamp || status=='unread'){
+  		  	messageIteratorJoel ++;
+  		  	}
+  			   var ni = document.getElementById('joel');
+  				 ni.innerHTML = "<h3>Joel Fong:</h3>"+ 
+			    "<p>"+ messageStr + "</p>"+
+			    "<p>"+ formatTimeStr(timestamp) + "</p>"+
+			    '<a href="chat.jsp?username=marie_wong&requestor=joel_fong">'+
+			    messageIteratorJoel.toString() +' new message(s)</a>'+
+  				 "<hr>";  
+	  }
+  	if(to=="marie_wong" && from=="linda_chew"){
+  		if(lastSeen<timestamp || status=='unread'){
+  		  	messageIteratorLinda ++;
+  		  	}
+  			   var ni = document.getElementById('linda');
+  				 ni.innerHTML = "<h3>Linda Chew:</h3>"+ 
+			    "<p>"+ messageStr + "</p>"+
+			    "<p>"+ formatTimeStr(timestamp) + "</p>"+
+			    '<a href="chat.jsp?username=marie_wong&requestor=linda_chew>'+
+			    messageIteratorLinda.toString() +' new message(s)</a>'+
+  				 "<hr>";	  
+	  }
+  	if(to=="marie_wong" && from=="john_luke"){
+  		if(lastSeen<timestamp || status=='unread'){
+  		  	messageIteratorJohn ++;
+  		  	}
+  			   var ni = document.getElementById('john');
+  				 ni.innerHTML = "<h3>John Luke:</h3>"+ 
+			    "<p>"+ messageStr + "</p>"+
+			    "<p>"+ formatTimeStr(timestamp) + "</p>"+
+			    '<a href="chat.jsp?username=marie_wong&requestor=john_luke">'+
+			    messageIteratorJohn.toString() +' new message(s)</a>'+
+  				 "<hr>"; 
+	  }
+  	if(to=="marie_wong" && from=="anna_smith"){
+  		if(lastSeen<timestamp || status=='unread'){
+  		  	messageIteratorAnna ++;
+  		  	}
+  			   var ni = document.getElementById('anna');
+  				 ni.innerHTML = "<h3>Anna:</h3>"+ 
+			    "<p>"+ messageStr + "</p>"+
+			    "<p>"+ formatTimeStr(timestamp) + "</p>"+
+			    '<a href="chat.jsp?username=marie_wong&requestor=anna_smith">'+
+			    messageIteratorAnna.toString() +' new message(s)</a>'+
+  				 "<hr>";	  
+	  }
+  	if(to=="marie_wong"  && from=="bryan_tan"){
+  		if(lastSeen<timestamp || status=='unread'){
+  		  	messageIteratorBryan ++;
+  		  	}
+  			   var ni = document.getElementById('bryan');
+  				 ni.innerHTML = "<h3>Bryan Tan:</h3>"+ 
+			    "<p>"+ messageStr + "</p>"+
+			    "<p>"+ formatTimeStr(timestamp) + "</p>"+
+			    '<a href="chat.jsp?username=marie_wong&requestor=bryan_tan">'+
+			    messageIteratorBryan.toString() +' new message(s)</a>'+
+  				 "<hr>";	  
+	  }
+  	if(to=="marie_wong"  && from=="robert_yiu"){
+  		if(lastSeen<timestamp || status=='unread'){
+  				messageIteratorRobert ++;
+  		  	}
+  			   var ni = document.getElementById('robert');
+  				 ni.innerHTML = "<h3>Robert Yiu:</h3>"+ 
+			    "<p>"+ messageStr + "</p>"+
+			    "<p>"+ formatTimeStr(timestamp) + "</p>"+
+			    '<a href="chat.jsp?username=marie_wong&requestor=robert_yiu">'+
+			    messageIteratorRobert.toString() +' new message(s)</a>'+
+  				 "<hr>";  
+	  }
+  	if(to=="marie_wong" && from=="johnathan_song"){
+  		if(lastSeen<timestamp || status=='unread'){
+  		  	messageIteratorJohnathan ++;
+  		  	}
+  			   var ni = document.getElementById('johnathan');
+  				 ni.innerHTML = "<h3>Johnathan Song:</h3>"+ 
+			    "<p>"+ messageStr + "</p>"+
+			    "<p>"+ formatTimeStr(timestamp) + "</p>"+
+			    '<a href="chat.jsp?username=marie_wong&requestor=johnathan_song">'+
+			    messageIteratorJohnathan.toString() +' new message(s)</a>'+
+  				 "<hr>";	  
+	  }
+  	if(to=="marie_wong" && from=="justin_lee"){
+  		if(lastSeen<timestamp || status=='unread'){
+  		  	messageIteratorJustin ++;
+  		  	}
+  			   var ni = document.getElementById('justin');
+  				 ni.innerHTML = "<h3>Justin Lee:</h3>"+ 
+			    "<p>"+ messageStr + "</p>"+
+			    "<p>"+ formatTimeStr(timestamp) + "</p>"+
+			    '<a href="chat.jsp?username=marie_wong&requestor=justin_lee">'+
+			    messageIteratorJustin.toString() +' new message(s)</a>'+
+  				 "<hr>";	  
+	  }
+  	
+    });
+    //alert(lastSeen);
+  });
+  
+  function formatTimeStr(timestamp){
+	  var time = new Date(timestamp);
+		 var date = time.getDate();
+		var month = time.getMonth();
+		var year = time.getFullYear();
+		var seconds = time.getSeconds();
+		var minutes = time.getMinutes();
+		//var minutesStr = minutes.toString();
+		var hour = time.getHours();
+		var timeStr = hour + ":" + + minutes + " " + date + " " + m_names[month] + " " + year;
+  		return timeStr;
+  }
+  
+	
+  
+  </script>
+</head>
+<body>
+
+
+
+<!-- Start of second page -->
+<div data-role="page" id="index" data-add-back-btn="true">
+
+	<div data-role="header">
+  <a href="#" class="ui-nodisc-icon ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-carat-l " data-rel="back">Back</a>
+  
+		<h1>Notifications</h1>
+        
+       <a href="#right-panel"   data-shadow="false" data-iconshadow="false" class="ui-nodisc-icon ui-btn ui-shadow ui-btn-icon-right ui-icon-myicon ui-btn-icon-notext">Panel</a>
+       
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content">
+    
+		
+    	<h1>My Messages (<a id="newMessages1"></a>)</h1>
+<div>
+  <b>Navigation Bar:</b>
+    <a href="mymessages.jsp">My Messages</a>(<a id="newMessages"></a>)
+  <a href="index.jsp?username=<%=username%>">Set Up Location</a>
+  <a href="">My Bills</a>
+  <a href="">My Profile</a>
+   <a href="login.html">Logout</a>
+  <hr>
+  </div>
+
+ <b>Messages:</b>
+	<div id="messages">
+	<div id="jason"></div>
+<div id="joel"></div>
+<div id="linda"></div>
+<div id="john"></div>
+<div id="anna"></div>
+<div id="bryan"></div>
+<div id="robert"></div>
+<div id="johnathan"></div>
+<div id="justin"></div>
+	</div>
+    
+    
+	</div><!-- /content -->
+    
+    <!-- Panel -->
+    <div data-role="panel" id="right-panel" data-display="push" data-position="right" data-theme="b">
+
+    	
+		<a href="#" class="ui-btn">Notifications</a>
+        <a href="#" class="ui-btn">My message</a>
+        <a href="#" class="ui-btn">Set Up Location</a>
+        <a href="#" class="ui-btn">My Bill/a>
+        <a href="#" class="ui-btn">My Profile</a>
+    </div><!-- /panel -->
+
+	<div data-role="footer">
+		
+	</div><!-- /footer -->
+</div><!-- /page -->
+
+
+</body>
+</html>
